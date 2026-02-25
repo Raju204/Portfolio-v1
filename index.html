@@ -524,6 +524,8 @@
         <li><a href="#documents" onclick="closeNav()">Certificates</a></li>
         <li><a href="#resume" onclick="closeNav()">Resume</a></li>
         <li><a href="#contact" onclick="closeNav()">Contact</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="admin.html" style="color:#f0c040;"><i class="fas fa-lock" style="margin-right:4px;"></i>Admin</a></li>
     </ul>
     <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
         <span></span><span></span><span></span>
@@ -1212,6 +1214,171 @@
             }
         });
     });
+
+    // ===== ADMIN PANEL — LOCALSTORAGE INTEGRATION =====
+    (function loadAdminData() {
+        const raw = localStorage.getItem('raju_portfolio_data');
+        if (!raw) return; // No admin edits yet — use default HTML
+        let d;
+        try { d = JSON.parse(raw); } catch { return; }
+
+        // --- Hero ---
+        if (d.hero) {
+            const greeting = document.querySelector('.hero-greeting');
+            const name = document.querySelector('.hero-name');
+            const tagline = document.querySelector('.hero-tagline');
+            const btnPrimary = document.querySelector('.hero-cta .btn-primary');
+            const btnOutline = document.querySelector('.hero-cta .btn-outline');
+            if (greeting && d.hero.greeting) greeting.textContent = d.hero.greeting;
+            if (name && d.hero.name) name.textContent = d.hero.name;
+            if (tagline && d.hero.tagline) tagline.textContent = d.hero.tagline;
+            if (btnPrimary && d.hero.btnPrimary) btnPrimary.textContent = d.hero.btnPrimary;
+            if (btnOutline && d.hero.btnSecondary) btnOutline.textContent = d.hero.btnSecondary;
+        }
+
+        // --- About ---
+        if (d.about) {
+            const aboutSection = document.getElementById('about');
+            if (aboutSection) {
+                const storyBox = aboutSection.querySelector('.story-box');
+                if (storyBox && d.about.story) storyBox.textContent = d.about.story;
+
+                const aboutName = aboutSection.querySelector('.about-text .section-title');
+                if (aboutName && d.about.name) aboutName.textContent = d.about.name;
+
+                const paragraphs = aboutSection.querySelectorAll('.about-text p:not(.section-label)');
+                if (paragraphs[0] && d.about.p1) paragraphs[0].innerHTML = d.about.p1;
+                if (paragraphs[1] && d.about.p2) paragraphs[1].innerHTML = d.about.p2;
+                if (paragraphs[2] && d.about.p3) paragraphs[2].innerHTML = d.about.p3;
+
+                const stats = aboutSection.querySelectorAll('.about-stats .stat');
+                if (stats[0]) {
+                    const num0 = stats[0].querySelector('.num');
+                    const lbl0 = stats[0].querySelector('.label');
+                    if (num0 && d.about.stat1Num !== undefined) { num0.dataset.count = d.about.stat1Num; num0.textContent = '0'; }
+                    if (lbl0 && d.about.stat1Label) lbl0.textContent = d.about.stat1Label;
+                }
+                if (stats[1]) {
+                    const num1 = stats[1].querySelector('.num');
+                    const lbl1 = stats[1].querySelector('.label');
+                    if (num1 && d.about.stat2Num !== undefined) { num1.dataset.count = d.about.stat2Num; num1.textContent = '0'; }
+                    if (lbl1 && d.about.stat2Label) lbl1.textContent = d.about.stat2Label;
+                }
+                if (stats[2]) {
+                    const num2 = stats[2].querySelector('.num');
+                    const lbl2 = stats[2].querySelector('.label');
+                    if (num2 && d.about.stat3Num !== undefined) { num2.dataset.count = d.about.stat3Num; num2.textContent = '0'; }
+                    if (lbl2 && d.about.stat3Label) lbl2.textContent = d.about.stat3Label;
+                }
+            }
+        }
+
+        // --- Skills ---
+        if (d.skills && Array.isArray(d.skills)) {
+            const grid = document.querySelector('#skills .skills-grid');
+            if (grid) {
+                grid.innerHTML = '';
+                d.skills.forEach(skill => {
+                    const card = document.createElement('div');
+                    card.className = 'skill-card reveal';
+                    card.innerHTML = `
+                        <div class="icon"><i class="${skill.icon || 'fas fa-star'}"></i></div>
+                        <h3>${skill.title || ''}</h3>
+                        <p>${skill.desc || ''}</p>
+                        <div class="skill-bar"><span data-width="${skill.level || 75}%"></span></div>
+                    `;
+                    grid.appendChild(card);
+                });
+                // Re-observe for scroll reveal
+                grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            }
+        }
+
+        // --- Experience ---
+        if (d.experience && Array.isArray(d.experience)) {
+            const timeline = document.querySelector('#panel-experience .timeline');
+            if (timeline) {
+                timeline.innerHTML = '';
+                d.experience.forEach(exp => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item reveal';
+                    const bullets = (exp.desc || '').split('\n').filter(l => l.trim());
+                    const descHtml = bullets.length > 1
+                        ? '<ul>' + bullets.map(b => `<li>${b}</li>`).join('') + '</ul>'
+                        : `<p>${exp.desc || ''}</p>`;
+                    item.innerHTML = `
+                        <div class="date">${exp.date || ''}</div>
+                        <h3>${exp.title || ''}</h3>
+                        <div class="company">${exp.company || ''}</div>
+                        ${exp.location ? `<div class="location"><i class="fas fa-map-marker-alt"></i> ${exp.location}</div>` : ''}
+                        ${descHtml}
+                    `;
+                    timeline.appendChild(item);
+                });
+                timeline.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            }
+        }
+
+        // --- Education ---
+        if (d.education && Array.isArray(d.education)) {
+            const timeline = document.querySelector('#panel-education .timeline');
+            if (timeline) {
+                timeline.innerHTML = '';
+                d.education.forEach(edu => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item reveal';
+                    item.innerHTML = `
+                        <div class="date">${edu.date || ''}</div>
+                        <h3>${edu.title || ''}</h3>
+                        <div class="company">${edu.institution || ''}</div>
+                        ${edu.location ? `<div class="location"><i class="fas fa-map-marker-alt"></i> ${edu.location}</div>` : ''}
+                        <p>${edu.desc || ''}</p>
+                    `;
+                    timeline.appendChild(item);
+                });
+                timeline.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            }
+        }
+
+        // --- Contact ---
+        if (d.contact) {
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                const storyBox = contactSection.querySelector('.story-box');
+                if (storyBox && d.contact.story) storyBox.textContent = d.contact.story;
+
+                const cards = contactSection.querySelectorAll('.contact-card');
+                cards.forEach(card => {
+                    const icon = card.querySelector('i');
+                    if (!icon) return;
+                    if (icon.classList.contains('fa-envelope') && d.contact.email) {
+                        card.href = 'mailto:' + d.contact.email;
+                        card.querySelector('p').textContent = d.contact.email;
+                    }
+                    if (icon.classList.contains('fa-linkedin') && d.contact.linkedin) {
+                        card.href = d.contact.linkedin;
+                    }
+                    if (icon.classList.contains('fa-phone') && d.contact.phone) {
+                        card.href = 'tel:' + d.contact.phone.replace(/\s/g, '');
+                        card.querySelector('p').textContent = d.contact.phone;
+                    }
+                });
+            }
+
+            // Footer social links
+            const footer = document.querySelector('footer');
+            if (footer) {
+                const links = footer.querySelectorAll('.socials a');
+                links.forEach(a => {
+                    const icon = a.querySelector('i');
+                    if (!icon) return;
+                    if (icon.classList.contains('fa-linkedin-in') && d.contact.linkedin) a.href = d.contact.linkedin;
+                    if (icon.classList.contains('fa-envelope') && d.contact.email) a.href = 'mailto:' + d.contact.email;
+                    if (icon.classList.contains('fa-phone') && d.contact.phone) a.href = 'tel:' + d.contact.phone.replace(/\s/g, '');
+                });
+            }
+        }
+    })();
 </script>
 
 </body>

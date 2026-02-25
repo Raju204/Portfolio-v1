@@ -7,8 +7,8 @@ A modern, dark-themed storytelling portfolio website for **Raju Maurya** — BBA
 ---
 
 ## 🌐 Live Preview
+**Link:** [https://raju204.github.io/Portfolio-v1/](https://raju204.github.io/Portfolio-v1/)
 
-Open `index.html` in any modern browser to view the portfolio.
 
 ---
 
@@ -17,6 +17,9 @@ Open `index.html` in any modern browser to view the portfolio.
 ```
 Raju Portfolio/
 ├── index.html                              # Main portfolio page (single-file, self-contained)
+├── admin.html                              # Admin panel for editing portfolio & blog content
+├── blog.html                               # Blog listing page (standalone)
+├── blog-post.html                          # Individual blog post detail page
 ├── Photo.jpeg                              # Profile photo
 ├── README.md                               # This file
 └── Document/
@@ -89,6 +92,7 @@ The portfolio is built as a **scroll-driven narrative**, divided into 6 chapters
 
 ## ✨ Features
 
+### Portfolio
 - **Storytelling layout** — Chapter-based narrative with scroll-reveal animations
 - **Dark cinematic theme** — Deep black background with gold (#f0c040) & burnt orange (#e06040) accents
 - **Custom cursor** — Animated dot + ring cursor on desktop
@@ -103,7 +107,26 @@ The portfolio is built as a **scroll-driven narrative**, divided into 6 chapters
 - **Modal document viewer** — View PDFs and images in an in-page lightbox
 - **Hide-on-scroll navbar** — Navigation hides when scrolling down, reappears on scroll up
 - **Fully responsive** — Mobile-friendly with hamburger menu
-- **Single-file** — Everything (HTML, CSS, JS) in one `index.html` — no build tools needed
+- **localStorage integration** — Reads admin-saved edits and dynamically updates content on page load
+
+### Admin Panel (`admin.html`)
+- **Password-protected login** — Default password: `admin123` (changeable in Settings)
+- **Dashboard** — Overview with counts for Skills, Experience, Education, Documents, and Blog Posts
+- **Section editors** — Edit Hero, About, Skills, Experience, Education, and Contact sections
+- **CRUD operations** — Add, edit, delete, and reorder Skills / Experience / Education entries
+- **Blog management** — Full blog editor with create, edit, publish/unpublish, preview, and delete
+- **Settings** — Change password, export/import data as JSON, reset all data to defaults
+- **Toast notifications** — Visual feedback for save, error, and status changes
+- **Unsaved changes indicator** — Warns when there are unsaved modifications
+- **Data persistence** — All data saved via `localStorage` (keys: `raju_portfolio_data`, `raju_blog_posts`)
+
+### Blog System (`blog.html` + `blog-post.html`)
+- **Standalone blog** — Opens on a separate page, not embedded in the portfolio
+- **Card grid layout** — Responsive grid with cover images, category tags, excerpts, and read time
+- **Category filtering** — Dynamic filter tabs based on post categories
+- **Individual post pages** — Full article view with HTML content support, share buttons (Twitter, LinkedIn, copy link)
+- **Empty state** — Friendly message when no posts exist yet
+- **Plain text & HTML support** — Write in plain text or use HTML tags for rich formatting
 
 ---
 
@@ -134,9 +157,21 @@ The portfolio is built as a **scroll-driven narrative**, divided into 6 chapters
 
 - HTML5
 - CSS3 (animations, gradients, backdrop-filter, grid, flexbox)
-- Vanilla JavaScript (IntersectionObserver, DOM manipulation)
-- Google Fonts (CDN)
-- Font Awesome (CDN)
+- Vanilla JavaScript (IntersectionObserver, DOM manipulation, localStorage)
+- Google Fonts (CDN) — Playfair Display, Inter, Caveat
+- Font Awesome 6.5.1 (CDN)
+
+---
+
+## 🔧 How to Use the Admin Panel
+
+1. Open `admin.html` in your browser
+2. Login with password `admin123` (or your custom password)
+3. Edit any section using the sidebar navigation
+4. Click **Save Changes** to persist edits to `localStorage`
+5. Open `index.html` — your changes appear automatically
+6. To manage blog posts: go to **Blog** in the sidebar → Add / Edit / Publish posts
+7. Blog posts appear on `blog.html` (linked from the portfolio navbar)
 
 ---
 

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post — Raju Maurya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 18px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10000;
+            background: rgba(10,10,15,.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(240,192,64,.08);
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, #f0c040, #e06040);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-size: .85rem; font-weight: 500; letter-spacing: .5px;
+            text-transform: uppercase; color: #aaa;
+            position: relative; transition: color .3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+            background: #f0c040; transition: width .3s;
+        }
+        .nav-links a:hover { color: #f0c040; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-toggle { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+        .nav-toggle span { width: 25px; height: 2px; background: #e0e0e0; transition: .3s; }
+
+        /* ===== ARTICLE ===== */
+        .article-wrapper {
+            max-width: 800px; margin: 0 auto;
+            padding: 120px 40px 80px;
+        }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: #f0c040; font-size: .88rem; font-weight: 500;
+            margin-bottom: 30px; transition: gap .3s;
+        }
+        .back-link:hover { gap: 12px; }
+        .article-meta {
+            display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+            margin-bottom: 20px; font-size: .85rem; color: #888;
+        }
+        .article-meta .tag {
+            background: rgba(240,192,64,.1); color: #f0c040;
+            padding: 4px 14px; border-radius: 20px; font-weight: 500; font-size: .8rem;
+        }
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
+            line-height: 1.3; margin-bottom: 24px;
+        }
+        .article-cover {
+            width: 100%; max-height: 450px; object-fit: cover;
+            border-radius: 18px; margin-bottom: 36px;
+            border: 1px solid rgba(240,192,64,.08);
+        }
+
+        /* ===== ARTICLE CONTENT ===== */
+        .article-content {
+            line-height: 1.9; color: #ccc; font-size: 1.02rem;
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            font-family: 'Playfair Display', serif; color: #eee;
+            margin: 32px 0 14px;
+        }
+        .article-content h1 { font-size: 1.8rem; }
+        .article-content h2 { font-size: 1.5rem; }
+        .article-content h3 { font-size: 1.2rem; }
+        .article-content p { margin-bottom: 18px; }
+        .article-content ul, .article-content ol { padding-left: 24px; margin-bottom: 18px; }
+        .article-content li { margin-bottom: 6px; }
+        .article-content blockquote {
+            border-left: 3px solid #f0c040; padding: 16px 24px;
+            margin: 24px 0; background: rgba(240,192,64,.04);
+            border-radius: 0 12px 12px 0; font-style: italic; color: #bbb;
+        }
+        .article-content a { color: #f0c040; border-bottom: 1px solid rgba(240,192,64,.3); }
+        .article-content a:hover { border-bottom-color: #f0c040; }
+        .article-content code {
+            background: rgba(240,192,64,.08); padding: 2px 8px; border-radius: 4px;
+            font-size: .9rem; color: #f0c040;
+        }
+        .article-content pre {
+            background: #1a1a2e; border: 1px solid rgba(240,192,64,.08);
+            border-radius: 12px; padding: 20px; margin: 20px 0;
+            overflow-x: auto; font-size: .88rem;
+        }
+        .article-content pre code {
+            background: none; padding: 0; color: #ccc;
+        }
+        .article-content img {
+            border-radius: 14px; margin: 20px 0;
+            border: 1px solid rgba(240,192,64,.08);
+        }
+        .article-content strong { color: #eee; }
+        .article-content hr {
+            border: none; border-top: 1px solid rgba(240,192,64,.1);
+            margin: 30px 0;
+        }
+
+        /* ===== SHARE BAR ===== */
+        .share-bar {
+            display: flex; gap: 12px; align-items: center; margin-top: 40px;
+            padding-top: 30px; border-top: 1px solid rgba(240,192,64,.08);
+        }
+        .share-bar span { color: #888; font-size: .88rem; }
+        .share-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 1px solid rgba(240,192,64,.15); background: transparent;
+            color: #aaa; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .3s;
+        }
+        .share-btn:hover { background: rgba(240,192,64,.1); color: #f0c040; border-color: #f0c040; }
+
+        /* ===== 404 ===== */
+        .not-found {
+            text-align: center; padding: 160px 20px 80px; color: #666;
+        }
+        .not-found i { font-size: 4rem; color: rgba(240,192,64,.2); margin-bottom: 20px; }
+        .not-found h2 {
+            font-family: 'Playfair Display', serif; font-size: 1.6rem;
+            color: #888; margin-bottom: 12px;
+        }
+        .not-found .btn {
+            display: inline-block; margin-top: 24px;
+            padding: 12px 30px; border-radius: 50px;
+            background: linear-gradient(135deg, #f0c040, #e06040);
+            color: #0a0a0f; font-weight: 600; font-size: .9rem;
+            transition: transform .3s;
+        }
+        .not-found .btn:hover { transform: translateY(-3px); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center; padding: 40px 20px;
+            border-top: 1px solid rgba(240,192,64,.08);
+            color: #555; font-size: .8rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 14px 20px; }
+            .nav-links {
+                display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+                background: rgba(10,10,15,.97); flex-direction: column;
+                align-items: center; justify-content: center; gap: 28px;
+            }
+            .nav-links.open { display: flex; }
+            .nav-toggle { display: flex; }
+            .article-wrapper { padding: 100px 20px 60px; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+    <a href="index.html" class="nav-logo">RM.</a>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#journey">Journey</a></li>
+        <li><a href="index.html#documents">Certificates</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+    </div>
+</nav>
+
+<!-- ARTICLE CONTAINER -->
+<div id="articleWrapper"></div>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 Raju Maurya. All rights reserved. | <a href="blog.html" style="color:#f0c040;">Back to Blog</a></p>
+</footer>
+
+<script>
+const BLOG_KEY = 'raju_blog_posts';
+
+function loadBlogs() {
+    const raw = localStorage.getItem(BLOG_KEY);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return []; }
+}
+
+function getReadTime(content) {
+    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200));
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function renderPost() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const wrapper = document.getElementById('articleWrapper');
+
+    if (!id) { show404(wrapper); return; }
+
+    const posts = loadBlogs();
+    const post = posts.find(p => p.id === id);
+
+    if (!post || !post.published) { show404(wrapper); return; }
+
+    document.title = post.title + ' — Raju Maurya Blog';
+
+    // Convert newlines in content to HTML paragraphs if it's plain text
+    let htmlContent = post.content;
+    // If content has no HTML tags, wrap in paragraphs
+    if (!/<[a-z][\s\S]*>/i.test(htmlContent)) {
+        htmlContent = htmlContent.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    }
+
+    wrapper.innerHTML = `
+        <div class="article-wrapper">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <div class="article-meta">
+                ${post.category ? `<span class="tag">${escHtml(post.category)}</span>` : ''}
+                <span><i class="far fa-calendar"></i> ${formatDate(post.date)}</span>
+                <span><i class="far fa-clock"></i> ${getReadTime(post.content)} min read</span>
+            </div>
+            <h1 class="article-title">${escHtml(post.title)}</h1>
+            ${post.coverImage ? `<img class="article-cover" src="${post.coverImage}" alt="${escHtml(post.title)}">` : ''}
+            <div class="article-content">${htmlContent}</div>
+            <div class="share-bar">
+                <span>Share this post:</span>
+                <button class="share-btn" onclick="shareTwitter()" title="Twitter"><i class="fab fa-x-twitter"></i></button>
+                <button class="share-btn" onclick="shareLinkedIn()" title="LinkedIn"><i class="fab fa-linkedin-in"></i></button>
+                <button class="share-btn" onclick="copyLink()" title="Copy Link"><i class="fas fa-link"></i></button>
+            </div>
+        </div>
+    `;
+}
+
+function show404(wrapper) {
+    wrapper.innerHTML = `
+        <div class="not-found">
+            <i class="fas fa-ghost"></i>
+            <h2>Post Not Found</h2>
+            <p>The blog post you're looking for doesn't exist or has been unpublished.</p>
+            <a href="blog.html" class="btn">Browse All Posts</a>
+        </div>
+    `;
+}
+
+function shareTwitter() {
+    window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(document.title), '_blank');
+}
+function shareLinkedIn() {
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href), '_blank');
+}
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.querySelector('.share-btn[title="Copy Link"]');
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-link"></i>', 2000);
+    });
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', renderPost);
+</script>
+
+</body>
+</html>
