@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Raju Maurya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 18px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10000;
+            background: rgba(10,10,15,.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(240,192,64,.08);
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, #f0c040, #e06040);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-size: .85rem; font-weight: 500; letter-spacing: .5px;
+            text-transform: uppercase; color: #aaa;
+            position: relative; transition: color .3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+            background: #f0c040; transition: width .3s;
+        }
+        .nav-links a:hover { color: #f0c040; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active-link { color: #f0c040; }
+        .nav-links a.active-link::after { width: 100%; }
+        .nav-toggle { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+        .nav-toggle span { width: 25px; height: 2px; background: #e0e0e0; transition: .3s; }
+
+        /* ===== HERO BANNER ===== */
+        .blog-hero {
+            padding: 140px 40px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .blog-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 80%, rgba(240,192,64,.06) 0%, transparent 60%);
+        }
+        .blog-hero .label {
+            font-family: 'Caveat', cursive; font-size: 1.4rem; color: #f0c040;
+            margin-bottom: 8px; position: relative;
+        }
+        .blog-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700;
+            margin-bottom: 12px; position: relative;
+        }
+        .blog-hero p {
+            color: #888; max-width: 550px; margin: 0 auto; line-height: 1.7;
+            position: relative;
+        }
+
+        /* ===== FILTER TABS ===== */
+        .blog-filters {
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+            padding: 0 40px 20px; max-width: 900px; margin: 0 auto;
+        }
+        .filter-btn {
+            padding: 10px 24px; border-radius: 50px; font-size: .85rem; font-weight: 500;
+            cursor: pointer; border: 1px solid rgba(240,192,64,.2); background: transparent;
+            color: #aaa; transition: all .3s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: rgba(240,192,64,.1); color: #f0c040; border-color: #f0c040;
+        }
+
+        /* ===== BLOG GRID ===== */
+        .blog-container {
+            max-width: 1100px; margin: 0 auto; padding: 40px 40px 80px;
+        }
+        .blog-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;
+        }
+        .blog-card {
+            background: rgba(26,26,46,.5);
+            border: 1px solid rgba(240,192,64,.08);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all .4s;
+            cursor: pointer;
+            position: relative;
+        }
+        .blog-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(240,192,64,.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,.3);
+        }
+        .blog-card .card-image {
+            width: 100%; height: 200px; object-fit: cover;
+            background: linear-gradient(135deg, rgba(240,192,64,.08), rgba(224,96,64,.06));
+            display: flex; align-items: center; justify-content: center;
+        }
+        .blog-card .card-image i {
+            font-size: 3rem; color: rgba(240,192,64,.25);
+        }
+        .blog-card .card-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .blog-card .card-body {
+            padding: 24px;
+        }
+        .blog-card .card-meta {
+            display: flex; gap: 16px; align-items: center; margin-bottom: 12px;
+            font-size: .78rem; color: #888;
+        }
+        .blog-card .card-meta .tag {
+            background: rgba(240,192,64,.1); color: #f0c040;
+            padding: 3px 12px; border-radius: 20px; font-weight: 500;
+        }
+        .blog-card .card-body h3 {
+            font-size: 1.15rem; font-weight: 600; margin-bottom: 10px;
+            line-height: 1.4; color: #eee;
+            transition: color .3s;
+        }
+        .blog-card:hover .card-body h3 { color: #f0c040; }
+        .blog-card .card-body .excerpt {
+            font-size: .88rem; color: #888; line-height: 1.7;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .blog-card .card-footer {
+            padding: 0 24px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .blog-card .read-more {
+            font-size: .85rem; color: #f0c040; font-weight: 500;
+            display: inline-flex; align-items: center; gap: 6px;
+            transition: gap .3s;
+        }
+        .blog-card:hover .read-more { gap: 10px; }
+        .blog-card .read-time {
+            font-size: .78rem; color: #666;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center; padding: 80px 20px; color: #666;
+        }
+        .empty-state i { font-size: 4rem; color: rgba(240,192,64,.15); margin-bottom: 20px; }
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif; font-size: 1.4rem;
+            color: #888; margin-bottom: 8px;
+        }
+        .empty-state p { font-size: .9rem; max-width: 400px; margin: 0 auto; }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center; padding: 40px 20px;
+            border-top: 1px solid rgba(240,192,64,.08);
+            color: #555; font-size: .8rem;
+        }
+        footer .socials { display: flex; gap: 20px; justify-content: center; margin-bottom: 16px; }
+        footer .socials a {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1px solid rgba(240,192,64,.15);
+            display: flex; align-items: center; justify-content: center;
+            color: #aaa; transition: all .3s;
+        }
+        footer .socials a:hover { background: rgba(240,192,64,.1); color: #f0c040; border-color: #f0c040; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 14px 20px; }
+            .nav-links {
+                display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+                background: rgba(10,10,15,.97); flex-direction: column;
+                align-items: center; justify-content: center; gap: 28px;
+            }
+            .nav-links.open { display: flex; }
+            .nav-toggle { display: flex; }
+            .blog-hero { padding: 120px 20px 40px; }
+            .blog-container { padding: 30px 20px 60px; }
+            .blog-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+    <a href="index.html" class="nav-logo">RM.</a>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#journey">Journey</a></li>
+        <li><a href="index.html#documents">Certificates</a></li>
+        <li><a href="index.html#resume">Resume</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="blog.html" class="active-link">Blog</a></li>
+    </ul>
+    <div class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<div class="blog-hero">
+    <p class="label">My Thoughts & Insights</p>
+    <h1>The Blog</h1>
+    <p>Ideas, strategies, and stories from my journey in digital marketing, SEO, project management, and beyond.</p>
+</div>
+
+<!-- ===== FILTERS ===== -->
+<div class="blog-filters" id="blogFilters"></div>
+
+<!-- ===== BLOG GRID ===== -->
+<div class="blog-container">
+    <div class="blog-grid" id="blogGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="fas fa-pen-fancy"></i>
+        <h3>No Blog Posts Yet</h3>
+        <p>Check back soon — new content is being crafted behind the scenes.</p>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="socials">
+        <a href="https://www.linkedin.com/in/raju-maurya-68488a297" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <a href="mailto:mauryaraju556@gmail.com"><i class="fas fa-envelope"></i></a>
+        <a href="tel:+918988353656"><i class="fas fa-phone"></i></a>
+    </div>
+    <p>&copy; 2026 Raju Maurya. All rights reserved. |Crafted by Shubham Gupta | <a href="mailto:sg6664862@gmail.com"><i class="fas fa-envelope"></i> sg6664862@gmail.com</a> .</p>|<a href="index.html" style="color:#f0c040;">Back to Portfolio</a></p>
+</footer>
+
+<script>
+const STORAGE_KEY = 'raju_portfolio_data';
+const BLOG_KEY = 'raju_blog_posts';
+
+function loadBlogs() {
+    const raw = localStorage.getItem(BLOG_KEY);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return []; }
+}
+
+function getReadTime(content) {
+    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200));
+}
+
+function getExcerpt(content, len = 160) {
+    const text = content.replace(/<[^>]*>/g, '');
+    return text.length > len ? text.substring(0, len) + '...' : text;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function renderBlogs(filter) {
+    const posts = loadBlogs().filter(p => p.published);
+    const grid = document.getElementById('blogGrid');
+    const empty = document.getElementById('emptyState');
+
+    // Sort by date descending
+    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Filter
+    const filtered = (!filter || filter === 'all') ? posts : posts.filter(p => p.category === filter);
+
+    if (posts.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        document.getElementById('blogFilters').innerHTML = '';
+        return;
+    }
+
+    empty.style.display = filtered.length === 0 ? 'block' : 'none';
+
+    // Build category filter tabs
+    const categories = [...new Set(posts.map(p => p.category).filter(Boolean))];
+    const filtersEl = document.getElementById('blogFilters');
+    filtersEl.innerHTML = `<button class="filter-btn ${(!filter || filter === 'all') ? 'active' : ''}" onclick="renderBlogs('all')">All</button>`;
+    categories.forEach(cat => {
+        filtersEl.innerHTML += `<button class="filter-btn ${filter === cat ? 'active' : ''}" onclick="renderBlogs('${cat}')">${cat}</button>`;
+    });
+
+    // Render cards
+    grid.innerHTML = '';
+    filtered.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.onclick = () => window.location.href = 'blog-post.html?id=' + post.id;
+        card.innerHTML = `
+            <div class="card-image">
+                ${post.coverImage
+                    ? `<img src="${post.coverImage}" alt="${escHtml(post.title)}">`
+                    : `<i class="fas fa-feather-pointed"></i>`}
+            </div>
+            <div class="card-body">
+                <div class="card-meta">
+                    ${post.category ? `<span class="tag">${escHtml(post.category)}</span>` : ''}
+                    <span><i class="far fa-calendar"></i> ${formatDate(post.date)}</span>
+                </div>
+                <h3>${escHtml(post.title)}</h3>
+                <p class="excerpt">${getExcerpt(post.content)}</p>
+            </div>
+            <div class="card-footer">
+                <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
+                <span class="read-time"><i class="far fa-clock"></i> ${getReadTime(post.content)} min read</span>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', () => renderBlogs('all'));
+</script>
+
+</body>
+</html>
