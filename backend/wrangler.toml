@@ -1,0 +1,8 @@
+name = "portfolio-backend"
+main = "src/worker.js"
+compatibility_date = "2026-03-23"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "5bb14762ab1a420884f5584ab062be88"
+preview_id = "<ID_OF_PREVIEW_KV_NAMESPACE_FOR_LOCAL_DEVELOPMENT>"
